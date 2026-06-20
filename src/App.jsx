@@ -355,10 +355,7 @@ function Log(props) {
               return (
                 <button
                   key={c.id}
-                  onClick={() => {
-                    if (c.id === "Other") { setDraft({ ...draft, category: "Other" }); }
-                    else { setDraft({ ...draft, category: c.id, notes: "" }); setStep("amount"); }
-                  }}
+                  onClick={() => { setDraft({ ...draft, category: c.id }); setStep("amount"); }}
                   className="lift"
                   style={{
                     ...S.catCard,
@@ -373,23 +370,6 @@ function Log(props) {
             })}
           </div>
 
-          {draft.category === "Other" && (
-            <div style={S.otherBox}>
-              <label style={S.label}>What was it? (note)</label>
-              <input
-                autoFocus
-                value={draft.notes}
-                onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
-                placeholder="e.g. pharmacy, beach chairs…"
-                style={S.input}
-              />
-              <button
-                onClick={() => setStep("amount")}
-                disabled={!draft.notes.trim()}
-                style={{ ...S.primary, opacity: draft.notes.trim() ? 1 : 0.5 }}
-              >Continue ›</button>
-            </div>
-          )}
         </Section>
       )}
 
@@ -421,6 +401,9 @@ function AmountStep({ draft, setDraft, activeField, setActiveField, showTip, set
   }, []);
   const cat = catOf(draft.category);
   const total = draft.amountCents + draft.tipCents;
+  const [showNote, setShowNote] = useState(Boolean(draft.notes) || draft.category === "Other");
+  const noteRequired = draft.category === "Other";
+  const blocked = draft.amountCents === 0 || (noteRequired && !draft.notes.trim());
   const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "00", "0", "back"];
 
   return (
@@ -463,6 +446,18 @@ function AmountStep({ draft, setDraft, activeField, setActiveField, showTip, set
         <div style={S.totalLine}>Total <strong style={{ color: C.ink }}>{fmt(total)}</strong></div>
       )}
 
+      {/* note */}
+      {!showNote ? (
+        <button onClick={() => setShowNote(true)} style={S.addNote}>＋ Add a note</button>
+      ) : (
+        <input
+          value={draft.notes}
+          onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
+          placeholder={noteRequired ? "What was it? (required for Other)" : "Add a note (optional)"}
+          style={{ ...S.noteInput, borderColor: noteRequired && !draft.notes.trim() ? C.coral : C.line }}
+        />
+      )}
+
       {/* keypad */}
       <div style={S.keypad}>
         {keys.map((k) => (
@@ -478,8 +473,8 @@ function AmountStep({ draft, setDraft, activeField, setActiveField, showTip, set
 
       <button
         onClick={save}
-        disabled={draft.amountCents === 0}
-        style={{ ...S.saveBtn, opacity: draft.amountCents === 0 ? 0.5 : 1 }}
+        disabled={blocked}
+        style={{ ...S.saveBtn, opacity: blocked ? 0.5 : 1 }}
       >
         Save {fmt(total)}
       </button>
@@ -884,6 +879,8 @@ const styles = {
   amountValue: { fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 40, letterSpacing: "-0.5px" },
 
   addTip: { width: "100%", padding: "12px", borderRadius: 14, background: C.sun + "22", color: "#9a6b00", fontWeight: 800, fontSize: 15, border: `2px dashed ${C.sun}`, marginBottom: 14 },
+  addNote: { width: "100%", padding: "12px", borderRadius: 14, background: C.ocean + "14", color: C.oceanDeep, fontWeight: 800, fontSize: 15, border: `2px dashed ${C.ocean}`, marginBottom: 14 },
+  noteInput: { width: "100%", padding: "13px 14px", fontSize: 16, fontFamily: "inherit", fontWeight: 600, borderRadius: 12, border: "2px solid", outline: "none", marginBottom: 14, boxSizing: "border-box" },
   tipCard: { width: "100%", display: "flex", alignItems: "baseline", gap: 10, padding: "14px 18px", borderRadius: 16, background: "#fff", border: "2px solid", marginBottom: 10 },
   tipLabel: { fontWeight: 800, fontSize: 15, color: C.inkSoft },
   tipValue: { fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 28, marginLeft: "auto" },
