@@ -77,6 +77,7 @@ export default function App() {
   const [lastSaved, setLastSaved] = useState(null);
   const [unlocked, setUnlocked] = useState({});
   const [pinFor, setPinFor] = useState(null);
+  const [adminPin, setAdminPin] = useState(false);
 
   const [toast, setToast] = useState(null);
   const [alertsOn, setAlertsOn] = useState(false);
@@ -171,7 +172,7 @@ export default function App() {
     setStep("method");
     setPinFor(null);
   };
-  const openAdmin = () => setView("admin");
+  const openAdmin = () => setAdminPin(true);
   const editTx = (id, patch) => {
     let updated = null;
     setTransactions((cur) => cur.map((t) => {
@@ -254,6 +255,16 @@ export default function App() {
               expected={PINS[pinFor]}
               onClose={() => setPinFor(null)}
               onResult={onPinSuccess}
+            />
+          )}
+          {adminPin && (
+            <PinModal
+              member="Dad"
+              expected={PINS.Dad}
+              titleText="Admin · edit & delete"
+              subText="Enter Dad's code to manage entries"
+              onClose={() => setAdminPin(false)}
+              onResult={() => { setAdminPin(false); setView("admin"); }}
             />
           )}
         </main>
@@ -639,7 +650,6 @@ function Totals({ transactions, onDelete, onAdd }) {
                   {" · "}{t.method}{t.room ? ` → ${t.room}` : ""}{t.tipCents > 0 ? ` · tip ${fmt(t.tipCents)}` : ""} · {when(t.ts)}
                 </div>
               </div>
-              <button onClick={() => onDelete(t.id)} style={S.txDel} aria-label="Delete entry">✕</button>
             </div>
           );
         })}
@@ -701,7 +711,7 @@ function SetupNeeded() {
 /* ============================================================
    admin: PIN gate + edit-everything screen
    ============================================================ */
-function PinModal({ member, expected, onClose, onResult }) {
+function PinModal({ member, expected, onClose, onResult, titleText, subText }) {
   const S = styles;
   const [entry, setEntry] = useState("");
   const [err, setErr] = useState(false);
@@ -729,8 +739,8 @@ function PinModal({ member, expected, onClose, onResult }) {
             ? <img src={memOf(member).photo} alt={member} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             : <span style={{ color: "#fff" }}>{member[0]}</span>}
         </span>
-        <div style={S.pinTitle}>{member}'s screen</div>
-        <div style={S.pinSub}>Enter {member}'s 4-digit code</div>
+        <div style={S.pinTitle}>{titleText || `${member}'s screen`}</div>
+        <div style={S.pinSub}>{subText || `Enter ${member}'s 4-digit code`}</div>
         <div style={S.pinDots} className={err ? "shake" : ""}>
           {[0, 1, 2, 3].map((i) => (
             <span key={i} style={{ ...S.pinDot, ...(i < entry.length ? { background: color, borderColor: color } : {}), ...(err ? S.pinDotErr : {}) }} />
