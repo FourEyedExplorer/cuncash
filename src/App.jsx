@@ -174,14 +174,14 @@ export default function App() {
   };
   const openAdmin = () => setAdminPin(true);
   const editTx = (id, patch) => {
-    let updated = null;
-    setTransactions((cur) => cur.map((t) => {
-      if (t.id !== id) return t;
-      updated = { ...t, ...patch };
-      updated.room = updated.method === "Room Charge" ? roomFor(updated.spender) : null;
-      return updated;
-    }));
-    if (updated) db.update(id, updated).catch(() => {});
+    const current = transactions.find((t) => t.id === id);
+    if (!current) return;
+    const updated = { ...current, ...patch };
+    updated.room = updated.method === "Room Charge" ? roomFor(updated.spender) : null;
+    setTransactions((cur) => cur.map((t) => (t.id === id ? updated : t)));
+    db.update(id, updated)
+      .then(() => flash("Saved \u2713", 1500))
+      .catch((e) => flash("Couldn't save \u2014 " + (e?.message || e), 6000));
   };
 
   const back = () => {
