@@ -41,17 +41,17 @@ const CATEGORIES = [
 ];
 
 const C = {
-  sand: "#FFF6E6",
-  sandDeep: "#FCE9C4",
-  ink: "#08323A",
-  inkSoft: "#5B7B82",
+  sand: "#EAF3FB",
+  sandDeep: "#CFE6F7",
+  ink: "#0A2A4A",
+  inkSoft: "#5577A0",
   white: "#FFFFFF",
-  ocean: "#0FB5BC",
-  oceanDeep: "#086E73",
+  ocean: "#1E73C8",
+  oceanDeep: "#0B4A8A",
   coral: "#FF6F61",
   sun: "#FFC93C",
   pink: "#FF5E9C",
-  line: "#EFE3CC",
+  line: "#D4E6F5",
 };
 
 const emptyDraft = () => ({
@@ -734,9 +734,9 @@ function PinModal({ member, expected, onClose, onResult, titleText, subText }) {
   return (
     <div style={S.modalWrap} onClick={onClose}>
       <div style={S.pinCard} onClick={(e) => e.stopPropagation()}>
-        <span style={{ ...S.avatar, width: 66, height: 66, borderColor: color, background: memOf(member).soft, margin: "0 auto" }}>
-          {memOf(member).photo
-            ? <img src={memOf(member).photo} alt={member} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        <span style={{ ...S.avatar, width: 108, height: 108, fontSize: 40, borderColor: color, background: memOf(member).soft, margin: "0 auto 4px" }}>
+          {(memOf(member).hatPhoto || memOf(member).photo)
+            ? <img src={memOf(member).hatPhoto || memOf(member).photo} alt={member} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             : <span style={{ color: "#fff" }}>{member[0]}</span>}
         </span>
         <div style={S.pinTitle}>{titleText || `${member}'s screen`}</div>
@@ -832,7 +832,7 @@ const styles = {
   root: { minHeight: "100vh", background: `linear-gradient(180deg, ${C.sandDeep} 0%, ${C.sand} 24%)`, display: "flex", justifyContent: "center", fontFamily: "'Nunito', system-ui, sans-serif", color: C.ink, padding: "0 0 40px" },
   phone: { width: "100%", maxWidth: 440, minHeight: "100vh", background: C.sand, position: "relative" },
 
-  header: { position: "relative", height: 150, overflow: "hidden", backgroundImage: `linear-gradient(90deg, rgba(6,34,40,0.82) 0%, rgba(6,34,40,0.34) 50%, rgba(6,34,40,0.20) 100%), linear-gradient(180deg, rgba(6,34,40,0.08), rgba(6,34,40,0.34)), url(${FAMILY_PHOTO})`, backgroundSize: "cover", backgroundPosition: "center 44%", backgroundRepeat: "no-repeat" },
+  header: { position: "relative", height: 150, overflow: "hidden", backgroundImage: `linear-gradient(90deg, rgba(8,28,56,0.82) 0%, rgba(8,28,56,0.34) 50%, rgba(8,28,56,0.20) 100%), linear-gradient(180deg, rgba(8,28,56,0.08), rgba(8,28,56,0.34)), url(${FAMILY_PHOTO})`, backgroundSize: "cover", backgroundPosition: "center 44%", backgroundRepeat: "no-repeat" },
   sea: { position: "absolute", left: 0, right: 0, bottom: 0, height: 60, background: `linear-gradient(180deg, ${C.ocean}00, ${C.ocean})`, opacity: 0.9 },
   sun: { position: "absolute", right: 40, top: 34, width: 64, height: 64, borderRadius: "50%", background: "radial-gradient(circle at 50% 45%, #FFF1B8, #FFD166 60%, #FFB23E)", boxShadow: "0 0 40px #FFD16688" },
   headerInner: { position: "relative", padding: "20px 22px", zIndex: 2 },
@@ -843,7 +843,7 @@ const styles = {
 
   tabs: { display: "flex", gap: 8, padding: "14px 18px 4px" },
   tab: { flex: 1, padding: "12px 10px", borderRadius: 14, fontWeight: 800, fontSize: 15, color: C.inkSoft, background: "#fff", boxShadow: "0 2px 0 " + C.line },
-  tabOn: { color: "#fff", background: `linear-gradient(180deg, ${C.ocean}, ${C.oceanDeep})`, boxShadow: "0 4px 14px #0FB5BC66" },
+  tabOn: { color: "#fff", background: `linear-gradient(180deg, ${C.ocean}, ${C.oceanDeep})`, boxShadow: "0 4px 14px #1E73C866" },
 
   main: { padding: "10px 18px 0" },
 
@@ -914,7 +914,7 @@ const styles = {
   emptyTitle: { fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 24, marginTop: 8 },
   emptySub: { color: C.inkSoft, fontWeight: 600, maxWidth: 280, margin: "6px auto 20px" },
 
-  heroTotal: { position: "relative", borderRadius: 22, overflow: "hidden", background: `linear-gradient(180deg, ${C.ocean}, ${C.oceanDeep})`, marginBottom: 16, boxShadow: "0 10px 26px #0FB5BC44" },
+  heroTotal: { position: "relative", borderRadius: 22, overflow: "hidden", background: `linear-gradient(180deg, ${C.ocean}, ${C.oceanDeep})`, marginBottom: 16, boxShadow: "0 10px 26px #1E73C844" },
   heroSea: { position: "absolute", inset: 0, opacity: 0.35 },
   heroInner: { position: "relative", padding: "22px 22px 24px", color: "#fff", zIndex: 2 },
   heroLabel: { fontWeight: 800, fontSize: 13, letterSpacing: "1.5px", textTransform: "uppercase", opacity: 0.9 },
